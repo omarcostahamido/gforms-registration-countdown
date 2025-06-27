@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>gforms registration countdown</title>
+</head>
+<body>
+<div id="instructions">remaining seats:</div>
+<div id="seats">?</div>
+<button id="button" onclick="formsubmit()">REGISTER ME!</button>
+<div id="thankyou" style="display: none;">Thank you for registering!</div>
+<script>
+	// Google Sheets published to the web can be accessed as JSON
+    const sheetId = "2PACX-1vTbPdcFKPKJrzLo-RcMeOrT70x7sJGWFXGPLgcc1dGOLuC9tioIGlomhaikzz5oxNPnWWwaxudg02fw";
+    const sheetGid = "1275724260";
+    
+    // Function to fetch the data
+    async function fetchSheetData() {
+        try {
+            // Using the published sheet's JSON feed
+            const url = `https://docs.google.com/spreadsheets/d/e/${sheetId}/pub?gid=${sheetGid}&single=true&output=csv`;
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch data');
+            }
+            
+            const text = await response.text();
+            // Parse the first value from CSV (first line, first column)
+            const firstValue = text.split('\n')[0].split(',')[0];
+            return firstValue;
+        } catch (error) {
+            console.error('Error fetching sheet data:', error);
+            return "Error loading";
+        }
+    }
+    
+    // Get and display the sheet data
+    fetchSheetData().then(value => {
+        const remainingseats = value;
+        document.getElementById("seats").innerHTML = remainingseats;
+    });
+	// document.getElementById("seats").innerHTML = remainingseats;
+	
+	function formsubmit() {
+		document.getElementById("button").style.display = "none";
+		document.getElementById("thankyou").style.display = "block";
+		var URL = "https://docs.google.com/forms/d/e/1FAIpQLSex3lh5ijcHp2lDeVfXLaFTwBwgueh54z6UBmASvALLaDkfvQ/formResponse?usp=pp_url&entry.1361156111=why,+yes+of+course!&submit=Submit";
+		httpGet(URL);
+	}
+
+	function httpGet(theUrl) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", theUrl, false );
+        xmlHttp.send( null );
+        return xmlHttp.responseText;
+	}
+
+</script>
+</body>
+</html>
